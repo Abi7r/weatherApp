@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="icon" href="" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .container {
+        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="d-flex justify-content-center align-items-center"
+      style="height: 100vh"
+    >
+      <div class="container" style="width: 400px; background-color: burlywood">
+        <h1 class="text-center">Weather App</h1>
+        <input
+          type="text"
+          placeholder="Enter city name"
+          class="form-control mb-3 mt-2"
+          name=""
+          id="city"
+        />
+        <div id="result"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const API_Key = "4c681cda9b6e2a3e148aaa14a284ced1";
+    const cityInput = document.getElementById("city");
+    cityInput.addEventListener("keypress", (e) =>
+      e.key == "Enter" ? callApi() : ""
+    );
+    async function callApi() {
+      city = cityInput.value.trim();
+      resultDiv = document.getElementById("result");
+      if (!city) {
+        resultDiv.innerHTML = `<div class='alert alert-warning'>
+      Enter a valid city name
+    </div>`;
+      }
+      resultDiv.innerHTML = `<div class='spinner-border text-primary'>
+
+        </div>`;
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_Key}`
+        );
+        if (!response.ok) {
+          throw new Error("City not found");
+        }
+        const data = await response.json();
+        console.log(data);
+        displayData(data);
+      } catch (error) {
+        result.innerHTML = `<div class='alert alert-danger'>
+          ${error.message} Please try again
+        </div>`;
+      }
+    }
+    function displayData(data) {
+      const result = document.getElementById("result");
+      const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      result.innerHTML = `<div class='text-center mb-3'>
+        <div class="card">
+          <img src="${iconUrl}" class='card-img-top' height='100%' width='100%' alt="">
+          <div class="card-body">
+            <div class="card-title">${data.name},${
+        data.sys.country
+      }-${Math.round(data.main.temp)} &deg C</div>
+            <div class='card-text'><p>${data.weather[0].description}</p>
+              <p><strong>Humidity</strong> ${data.main.humidity}%</p>
+              <p><strong>Wind Speed:</strong> ${data.wind.speed} m/s</p>
+          <p><strong>Feels Like:</strong> ${Math.round(
+            data.main.feels_like
+          )}°C</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+  </script>
+</html>
