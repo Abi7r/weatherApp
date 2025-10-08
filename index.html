@@ -59,7 +59,7 @@
         </div>`;
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_Key}`
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_Key}&units=metric`
         );
         if (!response.ok) {
           throw new Error("City not found");
@@ -80,7 +80,7 @@
         <div class="card">
           <img src="${iconUrl}" class='card-img-top' height='100%' width='100%' alt="">
           <div class="card-body">
-            <div class="card-title">${data.name},${
+            <div class="card-title fw-bold">${data.name},${
         data.sys.country
       }-${Math.round(data.main.temp)} &deg C</div>
             <div class='card-text'><p>${data.weather[0].description}</p>
